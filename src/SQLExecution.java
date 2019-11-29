@@ -14,18 +14,18 @@ public class SQLExecution {
 	
 		//This commented out stuff was for me to be able to just put login info in file and not have
 		//to enter it in every time.
-/*
-		FileReader reader = null;
-		try {
-			reader = new FileReader("login.txt");
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		
-		Scanner fileScan = new Scanner(reader);
-        String username = fileScan.nextLine();
-        String password = fileScan.nextLine();
-  */
+
+//		FileReader reader = null;
+//		try {
+//			reader = new FileReader("login.txt");
+//		} catch (FileNotFoundException e1) {
+//			e1.printStackTrace();
+//		}
+//		
+//		Scanner fileScan = new Scanner(reader);
+//        String username = fileScan.nextLine();
+//        String password = fileScan.nextLine();
+  
 		Scanner scan = new Scanner(System.in);
         
 		System.out.println("Userame: ");
@@ -33,6 +33,8 @@ public class SQLExecution {
 		//I don't know how to make the invisible password thing work
 		System.out.println("Password: ");
 		String password = scan.nextLine();
+		
+		
         String connectString = "jdbc:postgresql://bartik.mines.edu/csci403";
         
         try {
