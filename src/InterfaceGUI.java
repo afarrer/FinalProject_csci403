@@ -19,7 +19,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.net.*;
 import java.io.*;
 
@@ -39,9 +41,10 @@ public class InterfaceGUI extends JFrame{
 	private int resultCounter = 0;
 	private JPanel container;
 	private ResultSet results;
+	private ResultSet crimeResults;
 	private JPanel upperTopPanel;
 
-	public InterfaceGUI() {
+	public InterfaceGUI() throws SQLException {
 		this.setSize(800,500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		sqlHandler = new SQLExecution();
@@ -61,7 +64,10 @@ public class InterfaceGUI extends JFrame{
 		
 		
 		try {
+	
 			results = sqlHandler.makeStatement("Austin");
+			
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -77,8 +83,20 @@ public class InterfaceGUI extends JFrame{
 			e1.printStackTrace();
 		}
 		
+		try {
+			crimeResults = sqlHandler.makeCrimeStatement("austin");
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		HashMap<Integer, Integer> crimeMap = coordinateMath.distanceMap(results, crimeResults);
 		
 		
+		    
+		    results = sqlHandler.makeStatement("Austin");
+		    
 		lowerTopPanel.add(box);
 		lowerTopPanel.add(searchButton);
 		

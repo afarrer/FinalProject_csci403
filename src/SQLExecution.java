@@ -49,6 +49,7 @@ public class SQLExecution {
 		try {
 			//Testing that function works
 			this.makeStatement("Austin");
+			this.makeCrimeStatement("Austin");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -59,7 +60,7 @@ public class SQLExecution {
 
 		String query = " Select * from listings where city = ?";
 
-		PreparedStatement prepared = db.prepareStatement(query);
+		PreparedStatement prepared = db.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE);
 
 
 		prepared.setString(1, city);
@@ -67,6 +68,23 @@ public class SQLExecution {
 		return prepared.executeQuery();
 
 	}
+	
+	public ResultSet makeCrimeStatement(String city) throws SQLException {
+
+		
+		
+		
+		String query2 = " Select * from crimes where city = ?";
+
+		PreparedStatement prepared2 = db.prepareStatement(query2, ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+
+
+		prepared2.setString(1, city);
+
+		return prepared2.executeQuery();
+
+	}
+	
 
 	public ResultSet getCities() throws SQLException {
 		String query = " Select * from city;";
