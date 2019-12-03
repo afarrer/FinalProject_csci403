@@ -55,6 +55,7 @@ public class SQLExecution {
 		try {
 			//Testing that function works
 			this.makeStatement("Austin");
+			this.makeCrimeStatement("Austin");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -91,6 +92,20 @@ public class SQLExecution {
         
         System.out.println("Successfully connected to database.");
     }
+	
+	
+	public ResultSet makeCrimeStatement(String city) throws SQLException {
+
+		String query2 = " Select * from crimes where city = LOWER(?)";
+
+		PreparedStatement prepared2 = db.prepareStatement(query2, ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+
+
+		prepared2.setString(1, city);
+
+		return prepared2.executeQuery();
+
+	}
 
 
 }

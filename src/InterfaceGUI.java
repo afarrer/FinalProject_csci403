@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Scanner;
 import java.net.*;
 import java.io.*;
@@ -44,8 +45,10 @@ public class InterfaceGUI extends JFrame{
 	private int resultCounter = 0;
 	private JPanel container;
 	private ResultSet results;
+	private ResultSet crimeResults;
 	private JPanel upperTopPanel;
 	private String listingName;
+	private Map<Integer, Integer> crimeMap; 
 
 	public InterfaceGUI() {
 		this.setSize(800,500);
@@ -173,10 +176,23 @@ public class InterfaceGUI extends JFrame{
 				cityListingLabel.setText("You are viewing listings in " + (String) box.getSelectedItem());
 				
 
-
 				container.removeAll();
 				try {
 					results = sqlHandler.makeStatement((String) box.getSelectedItem());
+					
+					crimeResults = sqlHandler.makeCrimeStatement((String) box.getSelectedItem());
+					if(crimeResults == null) {
+						System.out.println(185);
+					}
+					
+					
+					crimeMap = CoordinateMath.distanceMap(results, crimeResults);
+					results = sqlHandler.makeStatement((String) box.getSelectedItem());
+					
+					
+//					for(int id : crimeMap.keySet()) {
+//						System.out.println(crimeMap.get(id));
+//					}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -283,6 +299,15 @@ public class InterfaceGUI extends JFrame{
 		return hyperlink;
 
 	}
+	
+	public JLabel safetyScore(int ID, Map<Integer, Integer> crimes){
+		
+		int crime = crimes.get(ID);
+		crime = crime / 1000;
+		return new JLabel(("" +crime));
+		
+		
+	}
 
 	public void redrawPanel() {
 
@@ -316,6 +341,8 @@ public class InterfaceGUI extends JFrame{
 
 				try {
 					botLeftPanel.add(addHyperlink(results.getString(2)));
+					System.out.println(crimeMap);
+					botLeftPanel.add(safetyScore(results.getInt(1), crimeMap));
 
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
