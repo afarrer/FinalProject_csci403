@@ -57,13 +57,15 @@ public class InterfaceGUI extends JFrame{
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new GridLayout(2,0));
 		upperTopPanel = new JPanel();
-		JLabel cityListingLabel = new JLabel("You are viewing listings in Austin");
+		JLabel cityListingLabel = new JLabel();
+		//cityListingLabel = new JLabel("You are viewing listings in Austin");
 		upperTopPanel.add(cityListingLabel);
 		JPanel lowerTopPanel = new JPanel();
 		JLabel cityLabel = new JLabel("Select city to search for listings.");
 		JButton searchButton = new JButton("Search");
 		lowerTopPanel.add(cityLabel);
 		JComboBox<String> box = new JComboBox<String>();
+		box.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		ResultSet cities;
 
 
@@ -91,6 +93,7 @@ public class InterfaceGUI extends JFrame{
 
 		topPanel.add(upperTopPanel);
 		topPanel.add(lowerTopPanel);
+	
 
 		JPanel botPanel = new JPanel();
 		JButton nextButton = new JButton("Next Page");
@@ -99,8 +102,11 @@ public class InterfaceGUI extends JFrame{
 		botPanel.add(nextButton);
 
 		container = new JPanel();
+		container.setBackground(Color.WHITE);
 		container.setLayout(new GridLayout(10,2));
 		JScrollPane scrPane = new JScrollPane(container);
+		scrPane.getVerticalScrollBar().setUnitIncrement(16);
+		scrPane.getVerticalScrollBar().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		scrPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -141,6 +147,7 @@ public class InterfaceGUI extends JFrame{
 		}
 
 		previousButton.addActionListener(new previousListener());
+		previousButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		class nextListener implements ActionListener{
 
@@ -156,6 +163,7 @@ public class InterfaceGUI extends JFrame{
 
 		}
 		nextButton.addActionListener(new nextListener());
+		nextButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		class searchListener implements ActionListener{
 
@@ -163,7 +171,7 @@ public class InterfaceGUI extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				resultCounter = 0;
 				cityListingLabel.setText("You are viewing listings in " + (String) box.getSelectedItem());
-
+				
 
 
 				container.removeAll();
@@ -180,8 +188,9 @@ public class InterfaceGUI extends JFrame{
 
 		}
 		searchButton.addActionListener(new searchListener());
+		searchButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-		redrawPanel();
+		//redrawPanel();
 
 
 
@@ -314,9 +323,14 @@ public class InterfaceGUI extends JFrame{
 				}
 				JLabel safety = new JLabel("Safety Score");
 				botLeftPanel.add(safety);
+				botLeftPanel.setBackground(Color.WHITE);
 				leftPanel.add(botLeftPanel);
 
 
+				leftPanel.setBackground(Color.WHITE);
+				rightPanel.setBackground(Color.WHITE);
+				tempPanel.setBackground(Color.WHITE);
+				
 				tempPanel.add(leftPanel);
 				tempPanel.add(rightPanel);
 
