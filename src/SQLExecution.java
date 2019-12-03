@@ -12,6 +12,10 @@ public class SQLExecution {
 
 	public SQLExecution() {
 
+		
+		LoginGUI login = new LoginGUI(this);
+		login.open();
+		
 		//This commented out stuff was for me to be able to just put login info in file and not have
 		//to enter it in every time.
 
@@ -26,25 +30,27 @@ public class SQLExecution {
 //		        String username = fileScan.nextLine();
 //		        String password = fileScan.nextLine();
 
-		Scanner scan = new Scanner(System.in);
+//		Scanner scan = new Scanner(System.in);
+//
+//		System.out.println("Userame: ");
+//		String username = scan.nextLine();
+//		//I don't know how to make the invisible password thing work
+//		System.out.println("Password: ");
+//		String password = scan.nextLine();
 
-		System.out.println("Userame: ");
-		String username = scan.nextLine();
-		//I don't know how to make the invisible password thing work
-		System.out.println("Password: ");
-		String password = scan.nextLine();
 
-
-		String connectString = "jdbc:postgresql://bartik.mines.edu/csci403";
-
-		try {
-			db = DriverManager.getConnection(connectString, username, password);
-			System.out.println("Successfully connected to database.");
-		} 
-		catch (SQLException e) {
-			System.out.println("Error connecting to database: " + e);
-			return;
-		}
+//		String connectString = "jdbc:postgresql://bartik.mines.edu/csci403";
+//
+//		try {
+//			db = DriverManager.getConnection(connectString, username, password);
+//			System.out.println("Successfully connected to database.");
+//		} 
+//		catch (SQLException e) {
+//			System.out.println("Error connecting to database: " + e);
+//			return;
+//		}
+		
+		
 
 		try {
 			//Testing that function works
@@ -57,12 +63,12 @@ public class SQLExecution {
 
 	public ResultSet makeStatement(String city) throws SQLException {
 
-		String query = " Select * from listings where city = ?";
+		String query = " Select * from listings where city like ?";
 
 		PreparedStatement prepared = db.prepareStatement(query);
 
 
-		prepared.setString(1, city);
+		prepared.setString(1, city + "%");
 
 		return prepared.executeQuery();
 
@@ -74,6 +80,17 @@ public class SQLExecution {
 		PreparedStatement prepared = db.prepareStatement(query);
 		return prepared.executeQuery();
 	}
+	
+	
+	public void login(String username, String password) throws SQLException, ClassNotFoundException {
+
+        Class.forName("org.postgresql.Driver");
+        String connectString = "jdbc:postgresql://bartik.mines.edu/csci403";
+
+        db = DriverManager.getConnection(connectString, username, password);
+        
+        System.out.println("Successfully connected to database.");
+    }
 
 
 }
