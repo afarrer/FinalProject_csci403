@@ -32,6 +32,7 @@ public class LoginGUI extends JDialog implements ActionListener {
     
     public void open() {
        setTitle("Login");
+       this.setLocationRelativeTo(null);
 
         Container pane = getContentPane();
         pane.setLayout(new BorderLayout());

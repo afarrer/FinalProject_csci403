@@ -49,7 +49,8 @@ public class CoordinateMath {
 				double deltaLong = Math.toRadians((x2-x1));
 				double deltaLat = Math.toRadians((y2-y1));
 
-				double a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) + Math.cos(y1rad) * Math.cos(y2rad) * Math.sin(deltaLong/2) * Math.sin(deltaLong/2);
+				double a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) + Math.cos(y1rad)
+					* Math.cos(y2rad) * Math.sin(deltaLong/2) * Math.sin(deltaLong/2);
 
 				double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
@@ -60,7 +61,6 @@ public class CoordinateMath {
 					crimeCount++;
 				}
 			}
-			System.out.println(testingCounter);
 			crimeMap.put(ID, crimeCount);
 			i++;
 			testingCounter++;

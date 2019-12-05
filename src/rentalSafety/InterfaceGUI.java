@@ -57,6 +57,7 @@ public class InterfaceGUI extends JFrame{
 	public InterfaceGUI() {
 		this.setSize(975,600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
 		sqlHandler = new SQLExecution();
 		results = null;
 
@@ -184,6 +185,7 @@ public class InterfaceGUI extends JFrame{
 		loading.setSize(100, 100);
 		JLabel loadingLabel = new JLabel("Please Wait");
 		loading.add(loadingLabel);
+		loading.setLocationRelativeTo(null);
 		
 
 		class previousListener implements ActionListener{

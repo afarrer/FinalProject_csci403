@@ -1,15 +1,15 @@
 package rentalSafety;
 
-public class DrawInterface {
+public class DrawGUIInterface {
 	private InterfaceGUI programInterface;
 	
-	public DrawInterface() {
+	public DrawGUIInterface() {
 		this.programInterface = new InterfaceGUI();
 	}
 	
 	
 	
 	public static void main(String[] args) {
-		DrawInterface newInterface = new DrawInterface();
+		DrawGUIInterface newInterface = new DrawGUIInterface();
 	}
 }
