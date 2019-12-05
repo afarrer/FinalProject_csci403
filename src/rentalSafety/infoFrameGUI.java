@@ -14,12 +14,14 @@ public class infoFrameGUI extends JFrame{
 		ImageIcon img = new ImageIcon("infoLogo.png");
 		this.setIconImage(img.getImage());
 		JTextArea info = new JTextArea();
-		
+		info.setEditable(false);
 		String aboutInfo =
 				"Rental Safety's safety scores are based off of the number of crimes committed within \n"
 				+ "a two mile radius of the listings location. Crime information is sourced from public police \n"
 				+ "records published within the last eight years. 'Crime Safety' in this application has no \n"
-				+ "legal or standardized definition and is used purely to organize the listings.";
+				+ "legal or standardized definition and is used purely to organize the listings. \n"
+				+ "\n"
+				+ "Prices are based off of specified nightly prices from Airbnb's listing data.";
 		
 		info.setText(aboutInfo);
 		this.add(info);

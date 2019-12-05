@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -29,6 +30,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -49,18 +51,19 @@ public class InterfaceGUI extends JFrame{
 	//private ResultSet crimeResults;
 	private JPanel upperTopPanel;
 	private String listingName;
+	boolean prefResults = false;
 	//private Map<Integer, Integer> crimeMap; 
 
 	public InterfaceGUI() {
-		this.setSize(800,500);
+		this.setSize(975,600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		sqlHandler = new SQLExecution();
 		results = null;
-		
+
 		ImageIcon img = new ImageIcon("logo.png");
 		this.setIconImage(img.getImage());
 		this.setTitle("Rental Safety");
-		
+
 		Image infoImage = null;
 		try {
 			infoImage = ImageIO.read(new File("infoLogo.png"));
@@ -68,11 +71,25 @@ public class InterfaceGUI extends JFrame{
 		} catch (IOException e2) {
 			e2.printStackTrace();
 		}
-		
+
 		JLabel infoLabel = new JLabel(new ImageIcon(infoImage));
 		infoLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		infoLabel.setToolTipText("About Safety Score");
-		
+
+		JLabel ratingLabel = new JLabel("Safety Rating");
+		JComboBox<String> ratingBox = new JComboBox<String>();
+
+		ratingBox.addItem("");
+		ratingBox.addItem("Highest");
+		ratingBox.addItem("Lowest");
+
+		JLabel priceLabel = new JLabel("Price");
+		JComboBox<String> priceBox = new JComboBox<String>();
+
+		priceBox.addItem("");
+		priceBox.addItem("Highest");
+		priceBox.addItem("Lowest");
+
 		infoLabel.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -90,14 +107,14 @@ public class InterfaceGUI extends JFrame{
 				// the mouse has exited the label
 			}
 		});
-		
-		
-		
-		
-		
+
+
+
+
+
 
 		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new GridLayout(2,0));
+		topPanel.setLayout(new GridLayout(3,0));
 		upperTopPanel = new JPanel();
 		JLabel cityListingLabel = new JLabel();
 		//cityListingLabel = new JLabel("You are viewing listings in Austin");
@@ -110,6 +127,7 @@ public class InterfaceGUI extends JFrame{
 		box.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		ResultSet cities;
 
+		JPanel veryBotTopPanel = new JPanel();
 
 		try {
 			results = sqlHandler.makeStatement("Austin");
@@ -131,13 +149,20 @@ public class InterfaceGUI extends JFrame{
 
 
 		lowerTopPanel.add(box);
-		lowerTopPanel.add(searchButton);
+		veryBotTopPanel.add(searchButton);
+
+		//Got Rid of price stuff because sorting it was difficult and time consuming
+		//		lowerTopPanel.add(priceLabel);
+		//		lowerTopPanel.add(priceBox);
+		lowerTopPanel.add(ratingLabel);
+		lowerTopPanel.add(ratingBox);
 		lowerTopPanel.add(infoLabel);
 
 		topPanel.add(upperTopPanel);
 		topPanel.add(lowerTopPanel);
-	
-		JLabel loading = new JLabel("Loading");
+		topPanel.add(veryBotTopPanel);
+
+
 
 		JPanel botPanel = new JPanel();
 		JButton nextButton = new JButton("Next Page");
@@ -154,15 +179,26 @@ public class InterfaceGUI extends JFrame{
 
 		scrPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		JDialog loading = new JDialog(this,"Loading");
+		loading.setSize(100, 100);
+		JLabel loadingLabel = new JLabel("Please Wait");
+		loading.add(loadingLabel);
+		
 
 		class previousListener implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				loading.setVisible(true);
 				if(resultCounter > 0) {
 					resultCounter--;
 					try {
-						results = sqlHandler.makeStatement((String) box.getSelectedItem());
+						if(!prefResults) {
+							results = sqlHandler.makeStatement((String) box.getSelectedItem());
+						}else {
+							results = sqlHandler.makeStatementWithPreference((String) box.getSelectedItem(),(String) ratingBox.getSelectedItem()); 
+						}
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -185,6 +221,7 @@ public class InterfaceGUI extends JFrame{
 							"Unable to return tp previous page",
 							JOptionPane.WARNING_MESSAGE);
 				}
+				loading.setVisible(false);
 
 			}
 
@@ -197,12 +234,13 @@ public class InterfaceGUI extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				loading.setVisible(true);
 				resultCounter++;
 				container.removeAll();
 				redrawPanel();
 				repaint();
 				scrPane.getVerticalScrollBar().setValue(0);
+				loading.setVisible(false);
 			}
 
 		}
@@ -213,39 +251,38 @@ public class InterfaceGUI extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
-				lowerTopPanel.add(loading);
-				
+
+				loading.setVisible(true);
+
+
 				resultCounter = 0;
 				cityListingLabel.setText("You are viewing listings in " + (String) box.getSelectedItem());
-				
+
+				String safetyScore = (String) ratingBox.getSelectedItem();
 				
 
 				container.removeAll();
 				try {
-					results = sqlHandler.makeStatement((String) box.getSelectedItem());
-					
-//					crimeResults = sqlHandler.makeCrimeStatement((String) box.getSelectedItem());
-//					if(crimeResults == null) {
-//						System.out.println(185);
-//					}
-					
-					
-			//		crimeMap = CoordinateMath.distanceMap(results, crimeResults);
-					results = sqlHandler.makeStatement((String) box.getSelectedItem());
-					
-					
-//					for(int id : crimeMap.keySet()) {
-//						System.out.println(crimeMap.get(id));
-//					}
+
+					if(safetyScore.equals("")) {
+						results = sqlHandler.makeStatement((String) box.getSelectedItem());
+						prefResults = false;
+					}else {
+						results = sqlHandler.makeStatementWithPreference((String) box.getSelectedItem(), safetyScore);
+						prefResults = true;
+					}
+
+
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
 				redrawPanel();
+
 				scrPane.getVerticalScrollBar().setValue(0);
-				lowerTopPanel.remove(loading);
+				loading.setVisible(false);
+
 			}
 
 		}
@@ -345,15 +382,7 @@ public class InterfaceGUI extends JFrame{
 		return hyperlink;
 
 	}
-	
-	public JLabel safetyScore(int ID, Map<Integer, Integer> crimes){
-		
-		int crime = crimes.get(ID);
-		crime = crime / 1000;
-		return new JLabel(("" +crime));
-		
-		
-	}
+
 
 	public void redrawPanel() {
 
@@ -380,22 +409,39 @@ public class InterfaceGUI extends JFrame{
 				//Neighborhood actually contains the listingName
 
 				JLabel neighborhood = new JLabel(listingName);
-
+				Font oldFont = neighborhood.getFont();
+				neighborhood.setFont(new Font(oldFont.getName(), Font.BOLD, 20));
 				//neighborhood.setPreferredSize(new Dimension(250,100));
 				neighborhood.setMinimumSize(new Dimension(500,100));
 				leftPanel.add(neighborhood, BorderLayout.NORTH);
+				JLabel priceNum = null;
 
 				try {
 					botLeftPanel.add(addHyperlink(results.getString(2)));
-//					System.out.println(crimeMap);
-//					botLeftPanel.add(safetyScore(results.getInt(1), crimeMap));
+
+					priceNum = new JLabel(results.getString(9));
 
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				JLabel safety = new JLabel("Safety Score");
-				botLeftPanel.add(safety);
+
+				JLabel safety = null;
+				JLabel safetyScore = null;
+				if(prefResults) {
+					safety = new JLabel("Safety Score:");
+
+					safetyScore = new JLabel("" +results.getString(11));
+				}
+
+				JLabel priceLabel = new JLabel("Price:");
+
+				if(prefResults) {
+					botLeftPanel.add(safety);
+					botLeftPanel.add(safetyScore);
+				}
+				botLeftPanel.add(priceLabel);
+				botLeftPanel.add(priceNum);
 				botLeftPanel.setBackground(Color.WHITE);
 				leftPanel.add(botLeftPanel);
 
@@ -403,7 +449,7 @@ public class InterfaceGUI extends JFrame{
 				leftPanel.setBackground(Color.WHITE);
 				rightPanel.setBackground(Color.WHITE);
 				tempPanel.setBackground(Color.WHITE);
-				
+
 				tempPanel.add(leftPanel);
 				tempPanel.add(rightPanel);
 
